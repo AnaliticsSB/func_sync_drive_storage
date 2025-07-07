@@ -9,16 +9,16 @@ from fastapi.responses import RedirectResponse
 import os
 
 #* Librerías propias para el funcionamiento del API
-from utils.request_postgres import consulta_polizas_vigentes_tron
+from utils.send_files import sync_drive_gcp
 
 
 #* Definición del tipo de input
 class TextInput(BaseModel): #! Cambiar esto
-    tipoDocumento: str = Field(..., example="CC", description="Se espera el tipo de documento del usuario/cliente a consultar")
-    numeroDocumento: str = Field(..., example="123456789", description="Se espera el número de documento del usuario/cliente a consultar")
-    compania: str = Field(..., example="2", description="Se espera el código de la compania que emitio la póliza")
-    seccion: str = Field(..., example="1", description="Se espera el cógido de ramo emisión de la póliza")
-    poliza: str = Field(..., example="0123456789123", description="Se espera número de la póliza (con altura) a consultar")
+    project: str = Field(..., example="id-proyecto", description="Se espera el nombre del proyecto de GCP")
+    gcs_bucket: str = Field(..., example="name-bucket", description="Se espera el nombre del bucket de google cloud storage")
+    folder: str = Field(..., example="name-folder", description="Se espera el nombre del folder")
+    sheet_id: str = Field(..., example="1fgrgr5g75a7fr5gr5", description="Se espera el id del sheets")
+    sheet_name: str = Field(..., example="nombre_hoja", description="Se espera el nombre de la hoja del sheets")
     
 # Parametros básicos y clases
 app = FastAPI()
@@ -35,12 +35,12 @@ app.add_middleware(
 )
 
 #* Definición de un endpoint
-descripcion_path = 'API que retorna la información del último endoso de las pólizas vigentes' #! Cambiar esto
-summary_path = 'EndPoint que realiza una consulta a la base productiva PostgresSQL para la API Pólizas Vigentes Tronador' #! Cambiar esto
-endpoint_end = '/api_tron_polizas_vigentes' #! Cambiar esto
+descripcion_path = 'API que sincroniza archivos de un drive listados en un sheets aun bucket de GCP' #! Cambiar esto
+summary_path = 'EndPoint que realiza el envio de archivos de un drive a un bucket de gcp' #! Cambiar esto
+endpoint_end = '/sync_files_drive_gcp' #! Cambiar esto
 @app.post(endpoint_end, summary = summary_path, description = descripcion_path)
 async def ejemplo(input: TextInput):
-    response = consulta_polizas_vigentes_tron(tipoDocumento = input.tipoDocumento, numeroDocumento = input.numeroDocumento, compania = input.compania, seccion = input.seccion, poliza = input.poliza) #! Cambiar esto
+    response = sync_drive_gcp(project = input.project, gcs_bucket = input.gcs_bucket, folder = input.folder, sheet_id = input.sheet_id, sheet_name = input.sheet_name) #! Cambiar esto
     return response
 
 @app.get("/", response_class=RedirectResponse)
