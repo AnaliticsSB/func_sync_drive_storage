@@ -45,21 +45,17 @@ def initialize_service_drive():
     return service, gc
 
 def download_file_from_drive(drive_url, service):
-    try:
-        # Extraer file ID
-        file_id = drive_url.split("/d/")[1].split("/")[0]
-
-        # Obtener metadatos para extraer el nombre
-        request = service.files().get_media(fileId=file_id)
-        file = io.BytesIO()
-        downloader = MediaIoBaseDownload(file, request)
-        done = False
-        while done is False:
-            status, done = downloader.next_chunk()
-
-    except HttpError as error:
-        print(f"An error occurred: {error}")
-        file = None
+    # Extraer file ID
+    file_id = drive_url.split("/d/")[1].split("/")[0]
+    
+    # Obtener metadatos para extraer el nombre
+    request = service.files().get_media(fileId=file_id)
+    file = io.BytesIO()
+    downloader = MediaIoBaseDownload(file, request)
+    done = False
+    
+    while done is False:
+        status, done = downloader.next_chunk()
 
     return file.getvalue()
 
