@@ -15,7 +15,7 @@ from googleapiclient.http import MediaIoBaseDownload
 def get_credentials():
 
     client = secretmanager.SecretManagerServiceClient()
-    auth_creds = 'projects/911414108629/secrets/gcp_sb-xops-stage/versions/latest'
+    auth_creds = 'projects/880279556501/secrets/gcp_sb-xops-prod/versions/latest'
     response = client.access_secret_version(name=auth_creds).payload.data.decode("UTF-8")
     
     creds_dict = json.loads(response)
@@ -24,7 +24,7 @@ def get_credentials():
 
 def initialize_service_drive():
     client = secretmanager.SecretManagerServiceClient()
-    secrets = 'projects/911414108629/secrets/gcp_sb-xops-stage/versions/latest'
+    secrets = 'projects/880279556501/secrets/gcp_sb-xops-prod/versions/latest'
     response = client.access_secret_version(name=secrets).payload.data.decode("UTF-8")
     client_secret = json.loads(response)
 
