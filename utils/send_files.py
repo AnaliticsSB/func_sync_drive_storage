@@ -68,12 +68,6 @@ def sync_drive_gcp(project, gcs_bucket, folder, sheet_id, sheet_name):
     Endpoint principal que inicia el proceso de subida de PDFs.
     Se activa con una petición POST vacía.
     """
-    data = request.get_json()
-
-    if not data:
-        logging.error("No se recibió un payload JSON.")
-        return jsonify({"error": "Payload JSON inválido o ausente."}), 400
-
     PROJECT = project
     BUCKET_NAME = gcs_bucket
     FOLDER = folder
