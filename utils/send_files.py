@@ -72,7 +72,7 @@ def sync_drive_gcp(project, gcs_bucket, folder, sheet_id, sheet_name):
     
     if not all([PROJECT, BUCKET_NAME, FOLDER, SHEET_ID, SHEET_NAME]):
         return jsonify({"error": "Faltan los parámetros 'project', 'gcs_bucket', 'folder', 'sheet_id', 'sheet_name'."}), 400
-
+    
     uploaded_files = []
     failed_files = []
     
@@ -90,38 +90,37 @@ def sync_drive_gcp(project, gcs_bucket, folder, sheet_id, sheet_name):
     file_names = worksheet.col_values(16)[1:]
     
     if not urls:
-      return "No se encontraron URLs en la columna especificada.", 200
+        return "No se encontraron URLs en la columna especificada.", 200
     
     print(f"Se encontraron {len(urls)} URLs para procesar.")
     
     
     # Iterar sobre cada URL
     for i in range(0, len(urls)):
-      url = urls[i]
-      filename = file_names[i]
-    
-      if not url.startswith('http'):
+        url = urls[i]
+        filename = file_names[i]
+        
+        if not url.startswith('http'):
           print(f"Omitiendo valor no válido: {url}")
           continue
-    
-    print(f"Procesando: {url}")
-
-    # Descargar el contenido del PDF en memoria
-    file_bytes = download_file_from_drive(url, service) 
-
-    # Subir el contenido al bucket de GCS
-    bucket = storage_client.bucket(BUCKET_NAME)
-    blob = bucket.blob(FOLDER + filename)
-    
-    # Definir el tipo de contenido para que se visualice correctamente
-    blob.upload_from_string(
+          
+        print(f"Procesando: {url}")
+        
+        # Descargar el contenido del PDF en memoria
+        file_bytes = download_file_from_drive(url, service) 
+        
+        # Subir el contenido al bucket de GCS
+        bucket = storage_client.bucket(BUCKET_NAME)
+        blob = bucket.blob(FOLDER + filename)
+        
+        # Definir el tipo de contenido para que se visualice correctamente
+        blob.upload_from_string(
         file_bytes,
-        content_type='application/pdf'
-    )
-
-    print(f"Éxito: '{filename}' subido a '{BUCKET_NAME}'.")
-    uploaded_files.append(filename)
-
+        content_type='application/pdf')
+        
+        print(f"Éxito: '{filename}' subido a '{BUCKET_NAME}'.")
+        uploaded_files.append(filename)
+        
     summary = f"Proceso completado. Subidos: {len(uploaded_files)}, Fallidos: {len(failed_files)}."
     print(summary)
     return summary, 200
