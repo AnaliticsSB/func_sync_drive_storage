@@ -43,7 +43,7 @@ steps:
         --image "$(cat image_name.txt)" \
         --region "$(cat region.txt)" \
         --platform managed \
-        --service-account sb-xops-stage@sb-xops-stage.iam.gserviceaccount.com \
+        --service-account sb-xops-prod@appspot.gserviceaccount.com \
         --labels billing-tags=func_sync_drive_storage
 
 options:
