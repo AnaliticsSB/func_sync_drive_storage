@@ -64,7 +64,7 @@ def download_file_from_drive(drive_url, service):
 
     return file.getvalue()
 
-def sync_drive_gcp(*args, **kwargs):
+def sync_drive_gcp(project, gcs_bucket, folder, sheet_id, sheet_name):
     """
     Endpoint principal que inicia el proceso de subida de PDFs.
     Se activa con una petición POST vacía.
