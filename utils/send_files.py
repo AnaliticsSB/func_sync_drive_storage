@@ -5,7 +5,6 @@ import gspread
 import requests
 import logging
 import json
-from flask import Flask, request
 from google.oauth2.service_account import Credentials
 from google.oauth2 import service_account
 from google.cloud import secretmanager
