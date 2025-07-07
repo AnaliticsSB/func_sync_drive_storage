@@ -6,9 +6,9 @@ steps:
     - '-c'
     - |
       echo "us-east1" > region.txt 
-      echo "repo-do-api-tron-polizas-vigentes" > repo_artifact.txt
-      echo "do-api-tron-polizas-vigentes" > image_repo.txt
-      echo "do-api-tron-polizas-vigentes" > service_name.txt
+      echo "repo-func-sync-drive-storage" > repo_artifact.txt
+      echo "do-func-sync-drive-storage" > image_repo.txt
+      echo "do-func-sync-drive-storage" > service_name.txt
       echo "$(cat region.txt)-docker.pkg.dev/$PROJECT_ID/$(cat repo_artifact.txt)/$(cat image_repo.txt):latest" > image_name.txt
 
 
@@ -22,7 +22,7 @@ steps:
         echo "Repositorio ya existe, no se hace nada."
       else
         echo "Creando repositorio..."
-        gcloud artifacts repositories create "$(cat repo_artifact.txt)" --location "$(cat region.txt)" --description "Repo  API Pólizas Vigentes Tronador DataOps" --repository-format="DOCKER"
+        gcloud artifacts repositories create "$(cat repo_artifact.txt)" --location "$(cat region.txt)" --description "Repo API sync files drive to gcp" --repository-format="DOCKER"
       fi
   # Construcción de la imagen Docker y push a Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
@@ -43,8 +43,8 @@ steps:
         --image "$(cat image_name.txt)" \
         --region "$(cat region.txt)" \
         --platform managed \
-        --service-account sb-xops-prod@appspot.gserviceaccount.com \
-        --labels billing-tags=api_tron_polizas_vigentes
+        --service-account sb-xops-stage@sb-xops-stage.iam.gserviceaccount.com \
+        --labels billing-tags=func_sync_drive_storage
 
 options:
   logging: CLOUD_LOGGING_ONLY
